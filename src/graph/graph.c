@@ -1,18 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 #include <math.h> // for log10
 
 #include "graph.h"
 
+uint32_t max_edges_get(uint32_t vertex_count) {
+    return ((vertex_count + 1) * vertex_count) / 2;
+}
+
 AdjMatrix adj_matrix_make(uint32_t vertex_count) {
     AdjMatrix adj_matrix = calloc(vertex_count, sizeof(edge_t *));
-    if(adj_matrix == NULL) {
+    if(adj_matrix == NULL) return NULL;
+
+    uint32_t max_edges = max_edges_get(vertex_count);
+    edge_t *adj_matrix_raw = calloc(max_edges, sizeof(edge_t));
+    if(adj_matrix_raw == NULL) {
+        free(adj_matrix);
         return NULL;
     }
-
-    uint32_t max_edges = ((vertex_count + 1) * vertex_count) / 2;
-    edge_t *adj_matrix_raw = calloc(max_edges, sizeof(edge_t));
 
     uint32_t edge_i = 0;
     for(uint32_t i = 0; i < vertex_count; i++) {
@@ -31,6 +38,7 @@ void adj_matrix_free(Graph *graph) {
 
 Graph *graph_make(uint32_t vertex_count) {
     Graph *graph = calloc(1, sizeof(Graph));
+    if(graph == NULL) return NULL;
     graph->vertex_count = vertex_count;
     graph->adj_matrix = adj_matrix_make(vertex_count);
 
@@ -42,12 +50,20 @@ void graph_free(Graph *graph) {
     free(graph);
 }
 
+Graph *graph_embed(Graph *graph_sub, uint32_t vertex_count_sup) {
+    Graph *graph_sup = graph_make(vertex_count_sup);
+    memcpy(graph_sup->adj_matrix[0], graph_sub->adj_matrix[0],
+            sizeof(edge_t)*max_edges_get(graph_sub->vertex_count));
+
+    return graph_sup;
+}
+
 uint8_t graph_validate_edge(Graph *graph, uint32_t *v1, uint32_t *v2) {
     if(*v1 >= graph->vertex_count || *v2 >= graph->vertex_count) {
         return -1;
     }
     
-    if(v1 > v2) {
+    if(*v1 < *v2) {
         edge_t tmp = *v1;
         *v1 = *v2;
         *v2 = tmp;
