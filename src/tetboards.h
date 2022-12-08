@@ -1,11 +1,15 @@
 #pragma once
 
-typedef enum state_vals {
-    P_EMPTY=0,
-    P_FULL=1
-};
+#include "graph.h"
+#include "dynamic_array.h"
 
-typedef uint8_t state_t;
+enum cell_states {
+    C_UNSEEN=0,
+    C_OCCUPIED=1,
+    C_ATTACKED=2,
+    C_ATT_AND_OCC=3
+};
+typedef uint8_t cell_t;
 
 typedef struct {
     uint32_t i;
@@ -25,9 +29,16 @@ typedef struct {
     Board *board;
 } Position;
 
-Position *position_make(uint32_t);
+Position *position_make(uint32_t, Position *);
 void position_free(Position *);
-state_t position_get_rook(Position *, Vec3);
-void position_set_rook(Position *, Vec3, state_t);
-Board *board_generate(uint32_t n);
-void board_free(Board *board);
+Position *position_copy_rooks(Position *, Position *);
+void position_free_rook_list(Position *);
+cell_t position_get_cell_state(Position *, Vec3);
+int32_t position_set_cell_state(Position *, Vec3, cell_t);
+uint8_t position_fully_attacked(Position *, uint32_t);
+DVec *position_get_unattacked_locs(Position *, uint32_t, uint32_t);
+Position *position_fill_diagonal(Position *, uint32_t);
+Board *board_generate(uint32_t);
+void board_free(Board *);
+void position_print(Position *);
+void vector_pos_print_all(DVec *);

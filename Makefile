@@ -1,8 +1,13 @@
 SHELL = /bin/sh
+CFLAGS = -g -Wall
+LIBS = -lm
+OBJ = compute_mins.o brute_force.o diagonal_approx.o args.o tetboards.o graph.o dynamic_array.o
 
-graphtest : graphtest.o graph.o
-	gcc -lm -o graphtest graphtest.o graph.o
+compute_mins : $(OBJ)
+	gcc $(CFLAGS) -o $@ $^ $(LIBS)
 
-graphtest.o graph.o : src/graph/graphtest.c src/graph/graph.c src/graph/graph.h
-	gcc -g -c src/graph/graph.c
-	gcc -g -c src/graph/graphtest.c
+%.o : src/%.c
+	gcc -c $(CFLAGS) $^
+
+clean :
+	rm *.o compute_mins

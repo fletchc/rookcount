@@ -80,7 +80,7 @@ edge_t graph_get_edge(Graph *graph, uint32_t v1, uint32_t v2) {
     return graph->adj_matrix[v1][v2];
 }
 
-uint32_t graph_set_edge(Graph *graph, uint32_t v1, uint32_t v2, edge_t edge_val) {
+int32_t graph_set_edge(Graph *graph, uint32_t v1, uint32_t v2, edge_t edge_val) {
     if(graph_validate_edge(graph, &v1, &v2) == -1) {
         return -1;
     }
