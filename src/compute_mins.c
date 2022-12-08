@@ -5,6 +5,21 @@
 
 #include "compute_mins.h"
 
+static char help_msg[] =
+" \
+USAGE: [OPTIONS] BOARD_SIZE\n \
+Gives the minimum number of non-attacking rooks to cover \
+a tetrahedral chessboard of size BOARD_SIZE.\n \
+\n \
+Options:\n \
+-h      Shows this help message.\n \
+-g      Prints the minimum number of rooks for every board \
+up to size BOARD_SIZE.\n \
+-p      Prints the minimal placement found.\n \
+-d      Computes an approximate minimal placement by \
+filling increasing diagonal slices with rooks.\n \
+";
+
 int32_t main(int32_t argc, char *argv[]) {
     int64_t switch_flags = 0;
     uint32_t max_n = 0;
@@ -21,16 +36,8 @@ int32_t main(int32_t argc, char *argv[]) {
         }
     }
 
-    /*Position *pos = position_make(2, NULL);*/
-    /*Vec3 loc = { 1, 0, 0 };*/
-    /*position_set_cell_state(pos, loc, C_OCCUPIED);*/
-    /*printf("%u\n", position_fully_attacked(pos, 2));*/
-    /*position_print(pos);*/
-    /*position_free(pos);*/
-    /*return 0;*/
-
     if(switch_active(S_PRINT_HELP, switch_flags)) {
-        printf("\n");
+        printf(help_msg);
         return 0;
     }
 
